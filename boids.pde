@@ -1,6 +1,7 @@
 Boid barry;
 ArrayList<Boid> boids;
 ArrayList<Avoid> avoids;
+ArrayList<Avoid> attracts;
 
 float globalScale = .91;
 float eraseRadius = 20;
@@ -19,6 +20,9 @@ boolean option_avoid = true;
 boolean option_noise = true;
 boolean option_cohese = true;
 
+color avoid_color = color(0,255,200);
+color attract_color = color(255,0,0);
+
 // gui crap
 int messageTimer = 0;
 String messageText = "";
@@ -29,6 +33,7 @@ void setup () {
   recalculateConstants();
   boids = new ArrayList<Boid>();
   avoids = new ArrayList<Avoid>();
+  attracts = new ArrayList<Avoid>();
   for (int x = 100; x < width - 100; x+= 100) {
     for (int y = 100; y < height - 100; y+= 100) {
  //   boids.add(new Boid(x + random(3), y + random(3)));
@@ -36,7 +41,7 @@ void setup () {
     }
   }
   
-  setupWalls();
+  //setupWalls();
 }
 
 // haha
@@ -52,8 +57,8 @@ void recalculateConstants () {
 void setupWalls() {
   avoids = new ArrayList<Avoid>();
    for (int x = 0; x < width; x+= 20) {
-    avoids.add(new Avoid(x, 10));
-    avoids.add(new Avoid(x, height - 10));
+    avoids.add(new Avoid(x, 10,avoid_color));
+    avoids.add(new Avoid(x, height - 10,avoid_color));
   } 
 }
 
@@ -61,14 +66,14 @@ void setupCircle() {
   avoids = new ArrayList<Avoid>();
    for (int x = 0; x < 50; x+= 1) {
      float dir = (x / 50.0) * TWO_PI;
-    avoids.add(new Avoid(width * 0.5 + cos(dir) * height*.4, height * 0.5 + sin(dir)*height*.4));
+    avoids.add(new Avoid(width * 0.5 + cos(dir) * height*.4, height * 0.5 + sin(dir)*height*.4,avoid_color));
   } 
 }
 
 
 void draw () {
   noStroke();
-  colorMode(HSB);
+  //colorMode(HSB);
   fill(0, 100);
   rect(0, 0, width, height);
 
@@ -82,9 +87,14 @@ void draw () {
     }
   } else if (tool == "avoids") {
     noStroke();
-    fill(0, 200, 200);
+    fill(avoid_color);
+    ellipse(mouseX, mouseY, 15, 15);
+  } else if (tool == "attracts") {
+    noStroke();
+    fill(attract_color);
     ellipse(mouseX, mouseY, 15, 15);
   }
+    
   for (int i = 0; i <boids.size(); i++) {
     Boid current = boids.get(i);
     current.go();
@@ -93,6 +103,12 @@ void draw () {
 
   for (int i = 0; i <avoids.size(); i++) {
     Avoid current = avoids.get(i);
+    current.go();
+    current.draw();
+  }
+  
+ for (int i = 0; i <attracts.size(); i++) {
+    Avoid current = attracts.get(i);
     current.go();
     current.draw();
   }
@@ -110,6 +126,9 @@ void keyPressed () {
   } else if (key == 'w') {
     tool = "avoids";
     message("Place obstacles");
+  } else if (key == 's') {
+    tool = "attracts";
+    message("Place attractor");
   } else if (key == 'e') {
     tool = "erase";
     message("Eraser");
@@ -166,7 +185,10 @@ void mousePressed () {
     message(boids.size() + " Total Boid" + s(boids.size()));
     break;
   case "avoids":
-    avoids.add(new Avoid(mouseX, mouseY));
+    avoids.add(new Avoid(mouseX, mouseY,avoid_color));
+    break;
+  case "attracts":
+    attracts.add(new Avoid(mouseX, mouseY,attract_color));
     break;
   }
 }

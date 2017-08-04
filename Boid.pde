@@ -7,6 +7,9 @@ class Boid {
 
   // timers
   int thinkTimer = 0;
+  int hungerTimer = 0;
+  
+  boolean seek_food = false;
 
 
   Boid (float xx, float yy) {
@@ -15,6 +18,7 @@ class Boid {
     pos.x = xx;
     pos.y = yy;
     thinkTimer = int(random(10));
+    hungerTimer = int(random(500));
     shade = random(255);
     friends = new ArrayList<Boid>();
   }
@@ -35,13 +39,13 @@ class Boid {
     PVector allign = getAverageDir();
     PVector avoidDir = getAvoidDir(); 
     PVector avoidObjects = getAvoidAvoids();
-    PVector noise = new PVector(random(2) - 1, random(2) -1);
+    PVector noise = new PVector(random(-1,1), random(-1,1));
     PVector cohese = getCohesion();
 
     allign.mult(1);
-    if (!option_friend) allign.mult(0);
+    if (!option_friend || seek_food ) allign.mult(0);
     
-    avoidDir.mult(1);
+    //avoidDir.mult(1);
     if (!option_crowd) avoidDir.mult(0);
     
     avoidObjects.mult(3);
@@ -50,8 +54,8 @@ class Boid {
     noise.mult(0.1);
     if (!option_noise) noise.mult(0);
 
-    cohese.mult(1);
-    if (!option_cohese) cohese.mult(0);
+    //cohese.mult(1);
+    if (!option_cohese || seek_food ) cohese.mult(0);
     
     stroke(0, 255, 160);
 
@@ -66,6 +70,10 @@ class Boid {
     shade += getAverageColor() * 0.03;
     shade += (random(2) - 1) ;
     shade = (shade + 255) % 255; //max(0, min(255, shade));
+    
+    if(seek_food){
+      shade = 100;
+    }
   }
 
   void getFriends () {
@@ -204,6 +212,14 @@ class Boid {
   // update all those timers!
   void increment () {
     thinkTimer = (thinkTimer + 1) % 5;
+    hungerTimer = (hungerTimer + 1);
+    
+    if(hungerTimer >= timeToEat){
+      seek_food = !seek_food;
+      shade = random(255);
+      hungerTimer = int(random(500));
+    }
+    
   }
 
   void wrap () {

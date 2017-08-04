@@ -20,6 +20,9 @@ boolean option_avoid = true;
 boolean option_noise = true;
 boolean option_cohese = true;
 
+
+int timeToEat = 1000;
+
 color avoid_color = color(0,255,200);
 color attract_color = color(255,0,0);
 
@@ -73,7 +76,7 @@ void setupCircle() {
 
 void draw () {
   noStroke();
-  //colorMode(HSB);
+  colorMode(HSB);
   fill(0, 100);
   rect(0, 0, width, height);
 

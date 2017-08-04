@@ -10,15 +10,17 @@ class Avoid {
    }
    
    void go () {
-     
+     pos.add(mov);
+     wrap();
    }
    
    void draw () {
      fill(col); //<>//
-     pos.add(mov);
-     pos.x = (pos.x + width) % width;
-     pos.y = (pos.y + height) % height;
-        
      ellipse(pos.x, pos.y, 15, 15);
    }
+   
+  void wrap () {
+    pos.x = (pos.x + width) % width;
+    pos.y = (pos.y + height) % height;
+  }
 }

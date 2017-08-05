@@ -41,20 +41,25 @@ class Boid {
     PVector avoidObjects = getAvoidAvoids();
     PVector noise = new PVector(random(-1,1), random(-1,1));
     PVector cohese = getCohesion();
+    PVector attractObjects = getAttracts();
+    
 
     allign.mult(1);
     if (!option_friend || seek_food ) allign.mult(0);
     
-    //avoidDir.mult(1);
+    avoidDir.mult(1);
     if (!option_crowd) avoidDir.mult(0);
     
     avoidObjects.mult(3);
     if (!option_avoid) avoidObjects.mult(0);
+    
+    attractObjects.mult(3);
+    message("Attract Objects" + attractObjects);
 
     noise.mult(0.1);
     if (!option_noise) noise.mult(0);
 
-    //cohese.mult(1);
+    cohese.mult(1);
     if (!option_cohese || seek_food ) cohese.mult(0);
     
     stroke(0, 255, 160);
@@ -62,6 +67,7 @@ class Boid {
     move.add(allign);
     move.add(avoidDir);
     move.add(avoidObjects);
+    move.add(attractObjects);
     move.add(noise);
     move.add(cohese);
 
@@ -157,11 +163,30 @@ class Boid {
       float d = PVector.dist(pos, other.pos);
       // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
       if ((d > 0) && (d < avoidRadius)) {
-        // Calculate vector pointing away from neighbor
+        // Calculate vector pointing away from avoid
         PVector diff = PVector.sub(pos, other.pos);
         diff.normalize();
         diff.div(d);        // Weight by distance
         steer.add(diff);
+        count++;            // Keep track of how many
+      }
+    }
+    return steer;
+  }
+  
+  PVector getAttracts() {
+    PVector steer = new PVector(0, 0);
+    int count = 0;
+
+    for (Avoid other : attracts) {
+      float d = PVector.dist(pos, other.pos);
+      // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+      if ((d > 0) && (d < attractRadius)) {
+        // Calculate vector pointing towards attractor
+        PVector diff = PVector.sub(pos, other.pos);
+        diff.normalize();
+        diff.div(d);        // Weight by distance
+        steer.sub(diff);
         count++;            // Keep track of how many
       }
     }

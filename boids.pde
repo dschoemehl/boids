@@ -13,6 +13,7 @@ float friendRadius;
 float crowdRadius;
 float avoidRadius;
 float coheseRadius;
+float attractRadius;
 
 boolean option_friend = true;
 boolean option_crowd = true;
@@ -54,6 +55,7 @@ void recalculateConstants () {
   crowdRadius = (friendRadius / 1.3);
   avoidRadius = 90 * globalScale;
   coheseRadius = friendRadius;
+  attractRadius = 90 * globalScale;;
 }
 
 
@@ -208,6 +210,13 @@ void erase () {
     Avoid b = avoids.get(i);
     if (abs(b.pos.x - mouseX) < eraseRadius && abs(b.pos.y - mouseY) < eraseRadius) {
       avoids.remove(i);
+    }
+  }
+  
+  for (int i = attracts.size()-1; i > -1; i--) {
+    Avoid b = attracts.get(i);
+    if (abs(b.pos.x - mouseX) < eraseRadius && abs(b.pos.y - mouseY) < eraseRadius) {
+      attracts.remove(i);
     }
   }
 }

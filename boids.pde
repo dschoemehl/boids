@@ -102,8 +102,12 @@ void draw () {
     
   for (int i = 0; i <boids.size(); i++) {
     Boid current = boids.get(i);
-    current.go();
-    current.draw();
+    if(!current.dead) {
+      current.go();
+      current.draw();
+    } else {
+      boids.remove(i);
+    }
   }
 
   for (int i = 0; i <avoids.size(); i++) {

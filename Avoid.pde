@@ -15,7 +15,7 @@ class Avoid {
    }
    
    void draw () {
-     fill(col); //<>//
+     fill(col);
      ellipse(pos.x, pos.y, 15, 15);
    }
    

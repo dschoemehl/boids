@@ -10,6 +10,7 @@ class Boid {
   int hungerTimer = 0;
   
   boolean seek_food = false;
+  boolean dead = false;
 
 
   Boid (float xx, float yy) {
@@ -169,6 +170,9 @@ class Boid {
         diff.div(d);        // Weight by distance
         steer.add(diff);
         count++;            // Keep track of how many
+        if( d < 20 ){
+          dead = true;
+        }
       }
     }
     return steer;
@@ -178,7 +182,8 @@ class Boid {
     PVector steer = new PVector(0, 0);
     int count = 0;
 
-    for (Avoid other : attracts) {
+    for (int i = 0; i < attracts.size(); i++) {
+      Avoid other = attracts.get(i);
       float d = PVector.dist(pos, other.pos);
       // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
       if ((d > 0) && (d < attractRadius)) {
@@ -188,6 +193,9 @@ class Boid {
         diff.div(d);        // Weight by distance
         steer.sub(diff);
         count++;            // Keep track of how many
+        if(d < 5) {
+          attracts.remove(other);
+        }
       }
     }
     return steer;
@@ -240,7 +248,7 @@ class Boid {
     hungerTimer = (hungerTimer + 1);
     
     if(hungerTimer >= timeToEat){
-      seek_food = !seek_food;
+      //seek_food = !seek_food;
       shade = random(255);
       hungerTimer = int(random(500));
     }

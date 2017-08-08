@@ -146,7 +146,7 @@ void keyPressed () {
     globalScale *= 0.8;
   } else if (key == '=') {
       message("Increased Scale");
-    globalScale /= 0.8;
+    ;
   } else if (key == '1') {
      option_friend = option_friend ? false : true;
      message("Turned friend allignment " + on(option_friend));

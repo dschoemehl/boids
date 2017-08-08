@@ -4,6 +4,9 @@ class Boid {
   PVector move;
   float shade;
   ArrayList<Boid> friends;
+  float fishSize;
+  float maxFishSize;
+  int gender;
 
   // timers
   int thinkTimer = 0;
@@ -11,6 +14,7 @@ class Boid {
   
   boolean seek_food = false;
   boolean dead = false;
+  boolean find_partner;
 
 
   Boid (float xx, float yy) {
@@ -22,6 +26,11 @@ class Boid {
     hungerTimer = int(random(500));
     shade = random(255);
     friends = new ArrayList<Boid>();
+    fishSize = .5;
+    maxFishSize = 2;
+    gender = int(random(2));
+    find_partner = false;
+    
   }
 
   void go () {
@@ -43,6 +52,11 @@ class Boid {
     PVector noise = new PVector(random(-1,1), random(-1,1));
     PVector cohese = getCohesion();
     PVector attractObjects = getAttracts();
+    PVector partner = new PVector(0,0);
+    if(find_partner == true){
+      message("find partner");
+      partner = getPartner();
+    }
     
 
     allign.mult(1);
@@ -55,8 +69,9 @@ class Boid {
     if (!option_avoid) avoidObjects.mult(0);
     
     attractObjects.mult(3);
-    message("Attract Objects" + attractObjects);
-
+      
+    partner.mult(5);
+    
     noise.mult(0.1);
     if (!option_noise) noise.mult(0);
 
@@ -71,6 +86,7 @@ class Boid {
     move.add(attractObjects);
     move.add(noise);
     move.add(cohese);
+    move.add(partner);
 
     move.limit(maxSpeed);
     
@@ -95,6 +111,36 @@ class Boid {
     }
     friends = nearby;
   }
+
+  PVector getPartner() {
+    PVector steer = new PVector(0, 0);
+    int count = 0;
+    for (Boid other : friends) {
+      float d = PVector.dist(pos, other.pos);
+      // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+      if ((d > 0) && (d < friendRadius)) {
+        if( (gender != other.gender) && other.find_partner ){  
+          message("I found a partner!");
+          PVector diff = PVector.sub(pos, other.pos);
+          diff.normalize();
+          diff.div(d);        // Weight by distance
+          steer.sub(diff);
+          count++;            // Keep track of how many
+          if(d < 5) {
+            //have babies
+            message("Have Babies!");
+            int numberofbabies = int(random(3,9));
+            for (int i = 0; i < numberofbabies; i++){
+              boids.add(new Boid(pos.x,pos.y));
+              dead = true;
+            }  
+           }
+        }
+      }
+    }
+    return steer;
+  }
+    
 
   float getAverageColor () {
     float total = 0;
@@ -195,6 +241,13 @@ class Boid {
         count++;            // Keep track of how many
         if(d < 5) {
           attracts.remove(other);
+          if(fishSize < maxFishSize){
+            fishSize /= 0.8;
+          }
+          else
+          {
+            find_partner = true;
+          }
         }
       }
     }
@@ -230,14 +283,19 @@ class Boid {
       //line(this.pos.x, this.pos.y, f.pos.x, f.pos.y);
     }
     noStroke();
-    fill(shade, 90, 200);
+    if (gender == 1) shade = 200;
+    else shade = 140;
+    fill(shade, 100, 200);
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(move.heading());
     beginShape();
-    vertex(15 * globalScale, 0);
-    vertex(-7* globalScale, 7* globalScale);
-    vertex(-7* globalScale, -7* globalScale);
+    //vertex(15 * globalScale, 0);
+    //vertex(-7* globalScale, 7* globalScale);
+    //vertex(-7* globalScale, -7* globalScale);
+    vertex(15 * fishSize, 0);
+    vertex(-7* fishSize, 7* fishSize);
+    vertex(-7* fishSize, -7* fishSize);
     endShape(CLOSE);
     popMatrix();
   }

@@ -55,7 +55,7 @@ void recalculateConstants () {
   crowdRadius = (friendRadius / 1.3);
   avoidRadius = 90 * globalScale;
   coheseRadius = friendRadius;
-  attractRadius = 90 * globalScale;;
+  attractRadius = 300 * globalScale;;
 }
 
 

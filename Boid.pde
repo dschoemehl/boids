@@ -118,7 +118,7 @@ class Boid {
     for (Boid other : friends) {
       float d = PVector.dist(pos, other.pos);
       // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
-      if ((d > 0) && (d < friendRadius)) {
+      if ((d > 0) && (d < partnerRadius)) {
         if( (gender != other.gender) && other.find_partner ){  
           message("I found a partner!");
           PVector diff = PVector.sub(pos, other.pos);
@@ -283,20 +283,30 @@ class Boid {
       //line(this.pos.x, this.pos.y, f.pos.x, f.pos.y);
     }
     noStroke();
-    if (gender == 1) shade = 200;
-    else shade = 140;
+    if (gender == 1){
+      shade = 200;
+      tint(132,216,251);
+    }
+    else {
+      shade = 140;
+      tint(231,151,233);
+    }
+    //tint(shade, 100, 200);  
     fill(shade, 100, 200);
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(move.heading());
-    beginShape();
+    //beginShape();
     //vertex(15 * globalScale, 0);
     //vertex(-7* globalScale, 7* globalScale);
     //vertex(-7* globalScale, -7* globalScale);
-    vertex(15 * fishSize, 0);
-    vertex(-7* fishSize, 7* fishSize);
-    vertex(-7* fishSize, -7* fishSize);
-    endShape(CLOSE);
+    //vertex(15 * fishSize, 0);
+    //vertex(-7* fishSize, 7* fishSize);
+    //vertex(-7* fishSize, -7* fishSize);
+    //endShape(CLOSE);
+    imageMode(CENTER);
+    //tint(255, 153, 204);
+    image(fishImage,0,0,50*fishSize, 50*fishSize);
     popMatrix();
   }
 

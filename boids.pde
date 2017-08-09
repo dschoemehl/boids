@@ -14,6 +14,7 @@ float crowdRadius;
 float avoidRadius;
 float coheseRadius;
 float attractRadius;
+float partnerRadius;
 
 boolean option_friend = true;
 boolean option_crowd = true;
@@ -26,6 +27,8 @@ int timeToEat = 1000;
 
 color avoid_color = color(0,255,200);
 color attract_color = color(255,0,0);
+
+PImage fishImage;
 
 // gui crap
 int messageTimer = 0;
@@ -43,6 +46,8 @@ void setup () {
  //   boids.add(new Boid(x + random(3), y + random(3)));
   //    boids.add(new Boid(x + random(3), y + random(3)));
     }
+    
+  fishImage = loadImage("fish.png");
   }
   
   //setupWalls();
@@ -55,7 +60,8 @@ void recalculateConstants () {
   crowdRadius = (friendRadius / 1.3);
   avoidRadius = 90 * globalScale;
   coheseRadius = friendRadius;
-  attractRadius = 300 * globalScale;;
+  attractRadius = 300 * globalScale;
+  partnerRadius = 400 * globalScale;
 }
 
 
@@ -78,8 +84,8 @@ void setupCircle() {
 
 void draw () {
   noStroke();
-  colorMode(HSB);
-  fill(0, 100);
+  //colorMode(HSB);
+  fill(16,21,231);
   rect(0, 0, width, height);
 
 

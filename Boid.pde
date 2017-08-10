@@ -306,6 +306,11 @@ class Boid {
     //endShape(CLOSE);
     imageMode(CENTER);
     //tint(255, 153, 204);
+    //message("Heading " + move.heading());
+    if(move.x < 0)
+    {
+      scale(1,-1);
+    }
     image(fishImage,0,0,50*fishSize, 50*fishSize);
     popMatrix();
   }

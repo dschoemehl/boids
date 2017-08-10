@@ -47,7 +47,7 @@ void setup () {
   //    boids.add(new Boid(x + random(3), y + random(3)));
     }
     
-  fishImage = loadImage("fish.png");
+  fishImage = loadImage("fish3.png");
   }
   
   //setupWalls();

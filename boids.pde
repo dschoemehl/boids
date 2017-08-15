@@ -2,6 +2,7 @@ Boid barry;
 ArrayList<Boid> boids;
 ArrayList<Avoid> avoids;
 ArrayList<Avoid> attracts;
+ArrayList<PImage> fishImages;
 
 float globalScale = .91;
 float eraseRadius = 20;
@@ -21,6 +22,7 @@ boolean option_crowd = true;
 boolean option_avoid = true;
 boolean option_noise = true;
 boolean option_cohese = true;
+boolean show_gender = false;
 
 
 int timeToEat = 1000;
@@ -46,11 +48,34 @@ void setup () {
  //   boids.add(new Boid(x + random(3), y + random(3)));
   //    boids.add(new Boid(x + random(3), y + random(3)));
     }
-    
-  fishImage = loadImage("fish3.png");
+  
+  fishImages = new ArrayList<PImage>();
+  
+  String path = sketchPath() + "/data";
+  //println("Listing all filenames in a directory: ");
+  String[] filenames = listFileNames(path);
+  printArray(filenames);
+  for( String imageFile : filenames ) {
+    println(imageFile);
+    if(imageFile.endsWith(".png")){
+      fishImages.add(loadImage(imageFile));
+    }
+  }
   }
   
   //setupWalls();
+}
+
+// This function returns all the files in a directory as an array of Strings  
+String[] listFileNames(String dir) {
+  File file = new File(dir);
+  if (file.isDirectory()) {
+    String names[] = file.list();
+    return names;
+  } else {
+    // If it's not a directory
+    return null;
+  }
 }
 
 // haha
@@ -172,6 +197,9 @@ void keyPressed () {
      setupWalls(); 
   } else if (key == '.') {
      setupCircle(); 
+  } else if(key == 'g') {
+    show_gender = !show_gender;
+    message("show_gender = " + show_gender);
   }
   recalculateConstants();
 
@@ -196,7 +224,7 @@ String on(boolean in) {
 void mousePressed () {
   switch (tool) {
   case "boids":
-    boids.add(new Boid(mouseX, mouseY));
+    boids.add(new Boid(mouseX, mouseY,fishImages.get(int(random(0,fishImages.size())))));
     message(boids.size() + " Total Boid" + s(boids.size()));
     break;
   case "avoids":

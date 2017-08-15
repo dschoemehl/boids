@@ -7,6 +7,7 @@ class Boid {
   float fishSize;
   float maxFishSize;
   int gender;
+  PImage bodyImage;
 
   // timers
   int thinkTimer = 0;
@@ -17,7 +18,7 @@ class Boid {
   boolean find_partner;
 
 
-  Boid (float xx, float yy) {
+  Boid (float xx, float yy, PImage fishImage) {
     move = new PVector(0, 0);
     pos = new PVector(0, 0);
     pos.x = xx;
@@ -30,6 +31,7 @@ class Boid {
     maxFishSize = 2;
     gender = int(random(2));
     find_partner = false;
+    bodyImage = fishImage;
     
   }
 
@@ -65,7 +67,7 @@ class Boid {
     avoidDir.mult(1);
     if (!option_crowd) avoidDir.mult(0);
     
-    avoidObjects.mult(3);
+    avoidObjects.mult(8);
     if (!option_avoid) avoidObjects.mult(0);
     
     attractObjects.mult(3);
@@ -131,7 +133,7 @@ class Boid {
             message("Have Babies!");
             int numberofbabies = int(random(3,9));
             for (int i = 0; i < numberofbabies; i++){
-              boids.add(new Boid(pos.x,pos.y));
+              boids.add(new Boid(pos.x,pos.y,fishImage));
               dead = true;
             }  
            }
@@ -283,13 +285,19 @@ class Boid {
       //line(this.pos.x, this.pos.y, f.pos.x, f.pos.y);
     }
     noStroke();
-    if (gender == 1){
-      shade = 200;
-      tint(132,216,251);
+    if(show_gender == true)
+    {
+      if (gender == 1){
+        shade = 200;
+        tint(132,216,251);
+      }
+      else {
+        shade = 140;
+        tint(231,151,233);
+      }
     }
     else {
-      shade = 140;
-      tint(231,151,233);
+      tint(255,255,255);
     }
     //tint(shade, 100, 200);  
     fill(shade, 100, 200);
@@ -311,7 +319,7 @@ class Boid {
     {
       scale(1,-1);
     }
-    image(fishImage,0,0,50*fishSize, 50*fishSize);
+    image(bodyImage,0,0,50*fishSize, 50*fishSize);
     popMatrix();
   }
 

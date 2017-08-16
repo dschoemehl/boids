@@ -133,7 +133,7 @@ class Boid {
             message("Have Babies!");
             int numberofbabies = int(random(3,9));
             for (int i = 0; i < numberofbabies; i++){
-              boids.add(new Boid(pos.x,pos.y,fishImage));
+              boids.add(new Boid(pos.x,pos.y,bodyImage));
               dead = true;
             }  
            }

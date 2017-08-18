@@ -8,6 +8,9 @@ class Boid {
   float maxFishSize;
   int gender;
   PImage bodyImage;
+  int fishID;
+  int preyID;
+  int predatorID;
 
   // timers
   int thinkTimer = 0;
@@ -18,7 +21,7 @@ class Boid {
   boolean find_partner;
 
 
-  Boid (float xx, float yy, PImage fishImage) {
+  Boid (float xx, float yy, PImage fishImage, int ID, int predator, int prey) {
     move = new PVector(0, 0);
     pos = new PVector(0, 0);
     pos.x = xx;
@@ -32,9 +35,11 @@ class Boid {
     gender = int(random(2));
     find_partner = false;
     bodyImage = fishImage;
-    
+    fishID = ID;
+    preyID = prey;
+    predatorID = predator; 
   }
-
+  
   void go () {
     increment();
     wrap();
@@ -133,7 +138,7 @@ class Boid {
             message("Have Babies!");
             int numberofbabies = int(random(3,9));
             for (int i = 0; i < numberofbabies; i++){
-              boids.add(new Boid(pos.x,pos.y,fishImage));
+              boids.add(new Boid(pos.x,pos.y,fishImage,fishID,predatorID,preyID));
               dead = true;
             }  
            }
@@ -285,8 +290,7 @@ class Boid {
       //line(this.pos.x, this.pos.y, f.pos.x, f.pos.y);
     }
     noStroke();
-    if(show_gender == true)
-    {
+    if(show_gender == true) {
       if (gender == 1){
         shade = 200;
         tint(132,216,251);
@@ -332,12 +336,12 @@ class Boid {
       //seek_food = !seek_food;
       shade = random(255);
       hungerTimer = int(random(500));
-    }
-    
+    } 
   }
 
   void wrap () {
     pos.x = (pos.x + width) % width;
     pos.y = (pos.y + height) % height;
+
   }
 }

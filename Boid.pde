@@ -113,7 +113,9 @@ class Boid {
       if (test == this) continue;
       if (abs(test.pos.x - this.pos.x) < friendRadius &&
         abs(test.pos.y - this.pos.y) < friendRadius) {
-        nearby.add(test);
+          if(test.fishID == fishID){
+          nearby.add(test);
+          }
       }
     }
     friends = nearby;
@@ -138,7 +140,7 @@ class Boid {
             message("Have Babies!");
             int numberofbabies = int(random(3,9));
             for (int i = 0; i < numberofbabies; i++){
-              boids.add(new Boid(pos.x,pos.y,fishImage,fishID,predatorID,preyID));
+              boids.add(new Boid(pos.x,pos.y,bodyImage,fishID,predatorID,preyID));
               dead = true;
             }  
            }

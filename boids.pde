@@ -23,19 +23,7 @@ boolean option_noise = true;
 boolean option_cohese = true;
 boolean show_gender = false;
 
-class FishInfo {
-  
-  public String file;
-  public int ID;
-  public int predator;
-  public int prey;
-  
-  FishInfo(String fileName, int ID, int predator, int prey){
-    file = fileName;
-    ID = ID;
-    predator = predator;
-    prey = prey;
-}
+
 
 ArrayList <FishInfo> fishLibrary;
 
@@ -58,6 +46,7 @@ void setup () {
   boids = new ArrayList<Boid>();
   avoids = new ArrayList<Avoid>();
   attracts = new ArrayList<Avoid>();
+  fishLibrary = new ArrayList<FishInfo>();
   for (int x = 100; x < width - 100; x+= 100) {
     for (int y = 100; y < height - 100; y+= 100) {
  //   boids.add(new Boid(x + random(3), y + random(3)));
@@ -74,8 +63,10 @@ void setup () {
   for( String imageFile : filenames ) {
     println(imageFile);
     if(imageFile.endsWith(".png")){
-      fishImages.add(loadImage(imageFile));
-      fishLibrary.add(FishInfo(imageFile, fishCount, fishCount+1, fishCount+2));
+      //fishImages.add(loadImage(imageFile));
+      //FishInfo Fish = new FishInfo(loadImage(imageFile), fishCount, fishCount+1, fishCount+2);
+      fishLibrary.add(new FishInfo(loadImage(imageFile), fishCount, fishCount+1, fishCount+2));
+      fishCount++;
     }
   }
   }
@@ -242,8 +233,9 @@ void mousePressed () {
   switch (tool) {
   case "boids":
     //boids.add(new Boid(mouseX, mouseY,fishImages.get(int(random(0,fishImages.size())))));
-    FishInfo newFish = fishLibrary.get(int(random(0,fishImages.size())));
+    FishInfo newFish = fishLibrary.get(int(random(0,fishLibrary.size())));
     boids.add(new Boid(mouseX, mouseY,newFish.file, newFish.ID, newFish.predator, newFish.prey));
+    println(newFish.ID, newFish.predator, newFish.prey);
     message(boids.size() + " Total Boid" + s(boids.size()));
     break;
   case "avoids":
@@ -289,5 +281,4 @@ void drawText (String s, float x, float y) {
 void message (String in) {
    messageText = in;
    messageTimer = (int) frameRate * 3;
-}
 }

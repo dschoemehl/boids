@@ -406,20 +406,14 @@ class Boid {
     image(bodyImage,0,0,50*fishSize, 50*fishSize);
     popMatrix();
     
+    //Draw a line with a box around the prey
     for ( int i = 0; i < preyList.size(); i++) {
       Boid f = preyList.get(i);
       stroke(255,0,0);
       noFill();
-      //color(255,0,0);
       line(this.pos.x, this.pos.y, f.pos.x, f.pos.y);
-      //Draw a box
-      beginShape();
-      int size = 10;
-      vertex(f.pos.x-size, f.pos.y+size);
-      vertex(f.pos.x+size, f.pos.y+size);
-      vertex(f.pos.x+size, f.pos.y-size);
-      vertex(f.pos.x-size, f.pos.y-size);
-      endShape(CLOSE);
+      int boxSize = 20;
+      rect(f.pos.x-boxSize/2, f.pos.y-boxSize/2, boxSize, boxSize);
     }
   }
 

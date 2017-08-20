@@ -60,6 +60,7 @@ void setup () {
   String[] filenames = listFileNames(path);
   printArray(filenames);
   int fishCount = 0;
+  /*
   for( String imageFile : filenames ) {
     println(imageFile);
     if(imageFile.endsWith(".png")){
@@ -68,7 +69,15 @@ void setup () {
       fishLibrary.add(new FishInfo(loadImage(imageFile), fishCount, fishCount+1, fishCount+2));
       fishCount++;
     }
-  }
+    
+   
+   
+  }*/
+  
+  //Load 3 fish
+   fishLibrary.add(new FishInfo(loadImage(filenames[0]), 0, 1, 2));
+   fishLibrary.add(new FishInfo(loadImage(filenames[1]), 1, 2, 0));
+   fishLibrary.add(new FishInfo(loadImage(filenames[2]), 2, 0, 1));
   }
   
   //setupWalls();

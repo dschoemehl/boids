@@ -4,6 +4,8 @@ class Boid {
   PVector move;
   float shade;
   ArrayList<Boid> friends;
+  ArrayList<Boid> predatorList;
+  ArrayList<Boid> preyList;
   float fishSize;
   float maxFishSize;
   int gender;
@@ -30,6 +32,8 @@ class Boid {
     hungerTimer = int(random(500));
     shade = random(255);
     friends = new ArrayList<Boid>();
+    predatorList = new ArrayList<Boid>();
+    preyList = new ArrayList<Boid>();
     fishSize = .5;
     maxFishSize = 2;
     gender = int(random(2));
@@ -60,6 +64,8 @@ class Boid {
     PVector cohese = getCohesion();
     PVector attractObjects = getAttracts();
     PVector partner = new PVector(0,0);
+    PVector chasePrey = getPreyDir();
+    PVector escapePredators = getPredatorDir();
     if(find_partner == true){
       message("find partner");
       partner = getPartner();
@@ -78,6 +84,9 @@ class Boid {
     attractObjects.mult(3);
       
     partner.mult(5);
+    
+    chasePrey.mult(10);
+    escapePredators.mult(2);
     
     noise.mult(0.1);
     if (!option_noise) noise.mult(0);
@@ -108,17 +117,31 @@ class Boid {
 
   void getFriends () {
     ArrayList<Boid> nearby = new ArrayList<Boid>();
+    ArrayList<Boid> nearbyPred = new ArrayList<Boid>();
+    ArrayList<Boid> nearbyPrey = new ArrayList<Boid>();
     for (int i =0; i < boids.size(); i++) {
       Boid test = boids.get(i);
       if (test == this) continue;
       if (abs(test.pos.x - this.pos.x) < friendRadius &&
         abs(test.pos.y - this.pos.y) < friendRadius) {
           if(test.fishID == fishID){
-          nearby.add(test);
+            message("Added Friend;");
+            nearby.add(test);
+          }
+          else if(test.fishID == predatorID){
+            message("Added Predator!");
+            nearbyPred.add(test);
+          }
+          else if(test.fishID == preyID){
+            message("Added Prey!");
+            nearbyPrey.add(test);
           }
       }
     }
     friends = nearby;
+    predatorList = nearbyPred;
+    preyList = nearbyPrey;
+    
   }
 
   PVector getPartner() {
@@ -210,6 +233,29 @@ class Boid {
     }
     return steer;
   }
+  
+  PVector getPredatorDir() {
+    PVector steer = new PVector(0, 0);
+    int count = 0;
+
+    for (Boid other : predatorList) {
+      float d = PVector.dist(pos, other.pos);
+      // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+      if ((d > 0) && (d < crowdRadius)) {
+        message("Fleeing Predator!");
+        // Calculate vector pointing away from neighbor
+        PVector diff = PVector.sub(pos, other.pos);
+        diff.normalize();
+        diff.div(d);        // Weight by distance
+        steer.add(diff);
+        count++;            // Keep track of how many
+      }
+    }
+    if (count > 0) {
+      //steer.div((float) count);
+    }
+    return steer;
+  }
 
   PVector getAvoidAvoids() {
     PVector steer = new PVector(0, 0);
@@ -263,6 +309,35 @@ class Boid {
     return steer;
   }
   
+  PVector getPreyDir() {
+    PVector steer = new PVector(0, 0);
+    int count = 0;
+
+    for (int i = 0; i < preyList.size(); i++) { 
+      Boid other = preyList.get(i);
+      float d = PVector.dist(pos, other.pos);
+      // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+      if ((d > 0) && (d < attractRadius)) {
+        message("Chasing Prey!");
+        // Calculate vector pointing towards attractor
+        PVector diff = PVector.sub(pos, other.pos);
+        diff.normalize();
+        diff.div(d);        // Weight by distance
+        steer.sub(diff);
+        count++;            // Keep track of how many
+        if(d < 5) {
+          other.kill();
+          preyList.remove(other);
+        }
+      }
+    }
+    return steer;
+  }
+  
+  void kill(){
+    dead = true;
+  }
+  
   PVector getCohesion () {
    float neighbordist = 50;
     PVector sum = new PVector(0, 0);   // Start with empty vector to accumulate all locations
@@ -288,9 +363,12 @@ class Boid {
   void draw () {
     for ( int i = 0; i < friends.size(); i++) {
       Boid f = friends.get(i);
-      stroke(90);
-      //line(this.pos.x, this.pos.y, f.pos.x, f.pos.y);
+      stroke(0,255,0);
+      //color(255,0,0);
+      line(this.pos.x, this.pos.y, f.pos.x, f.pos.y);
     }
+    
+
     noStroke();
     if(show_gender == true) {
       if (gender == 1){
@@ -327,6 +405,22 @@ class Boid {
     }
     image(bodyImage,0,0,50*fishSize, 50*fishSize);
     popMatrix();
+    
+    for ( int i = 0; i < preyList.size(); i++) {
+      Boid f = preyList.get(i);
+      stroke(255,0,0);
+      noFill();
+      //color(255,0,0);
+      line(this.pos.x, this.pos.y, f.pos.x, f.pos.y);
+      //Draw a box
+      beginShape();
+      int size = 10;
+      vertex(f.pos.x-size, f.pos.y+size);
+      vertex(f.pos.x+size, f.pos.y+size);
+      vertex(f.pos.x+size, f.pos.y-size);
+      vertex(f.pos.x-size, f.pos.y-size);
+      endShape(CLOSE);
+    }
   }
 
   // update all those timers!

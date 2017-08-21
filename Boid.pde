@@ -384,8 +384,6 @@ class Boid {
 
   void draw () {
     
-    
-
     noStroke();
     if(show_gender == true) {
       if (gender == 1){
@@ -442,6 +440,15 @@ class Boid {
         rect(f.pos.x-boxSize/2, f.pos.y-boxSize/2, boxSize, boxSize);
       }
     }
+    
+    if(show_radius){
+      noFill();
+      stroke(0,255,0);
+      ellipse(this.pos.x,this.pos.y,friendRadius,friendRadius);
+      stroke(255,0,0);
+      ellipse(this.pos.x,this.pos.y,preyRadius,preyRadius);
+    }
+    
   }
 
   // update all those timers!

@@ -25,6 +25,7 @@ boolean option_cohese = true;
 boolean show_gender = false;
 boolean show_lines = false;
 boolean movement_wrap = false;
+boolean show_radius = false;
 
 
 
@@ -227,6 +228,9 @@ void keyPressed () {
   } else if(key == 'w') {
     movement_wrap = !movement_wrap;
     message("movement_wrap = " + movement_wrap);
+  } else if(key == 'r') {
+    show_radius = !show_radius;
+    message("show_radius = " + show_radius);
   }
   recalculateConstants();
 

@@ -10,6 +10,7 @@ String tool = "boids";
 // boid control
 float maxSpeed;
 float friendRadius;
+float preyRadius;
 float crowdRadius;
 float avoidRadius;
 float coheseRadius;
@@ -22,6 +23,8 @@ boolean option_avoid = true;
 boolean option_noise = true;
 boolean option_cohese = true;
 boolean show_gender = false;
+boolean show_lines = false;
+boolean movement_wrap = false;
 
 
 
@@ -99,6 +102,7 @@ String[] listFileNames(String dir) {
 void recalculateConstants () {
   maxSpeed = 2.1 * globalScale;
   friendRadius = 60 * globalScale;
+  preyRadius = 240 * globalScale;
   crowdRadius = (friendRadius / 1.3);
   avoidRadius = 90 * globalScale;
   coheseRadius = friendRadius;
@@ -217,6 +221,12 @@ void keyPressed () {
   } else if(key == 'g') {
     show_gender = !show_gender;
     message("show_gender = " + show_gender);
+  } else if(key == 'l') {
+    show_lines = !show_lines;
+    message("show_lines = " + show_lines);
+  } else if(key == 'w') {
+    movement_wrap = !movement_wrap;
+    message("movement_wrap = " + movement_wrap);
   }
   recalculateConstants();
 

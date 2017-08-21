@@ -46,8 +46,20 @@ class Boid {
   
   void go () {
     increment();
-    wrap();
-
+    
+    if(movement_wrap){
+      wrap();
+    }
+    else{
+      //Check boundaries and turn around if necessary
+      if( pos.x > width - 10 || pos.x < 10 ){
+        move.x *= -1;
+      }
+      if( pos.y > height - 10 || pos.y < 10 ){
+        move.y *= -1;
+      }
+    }
+      
     if (thinkTimer ==0 ) {
       // update our friend array (lots of square roots)
       getFriends();
@@ -66,6 +78,7 @@ class Boid {
     PVector partner = new PVector(0,0);
     PVector chasePrey = getPreyDir();
     PVector escapePredators = getPredatorDir();
+    PVector flip = new PVector(1,1);
     if(find_partner == true){
       message("find partner");
       partner = getPartner();
@@ -85,8 +98,8 @@ class Boid {
       
     partner.mult(5);
     
-    chasePrey.mult(10);
-    escapePredators.mult(2);
+    chasePrey.mult(5);
+    escapePredators.mult(10);
     
     noise.mult(0.1);
     if (!option_noise) noise.mult(0);
@@ -103,8 +116,15 @@ class Boid {
     move.add(noise);
     move.add(cohese);
     move.add(partner);
+    move.add(chasePrey);
+    move.add(escapePredators);
 
     move.limit(maxSpeed);
+    
+    
+    
+   
+       
     
     shade += getAverageColor() * 0.03;
     shade += (random(2) - 1) ;
@@ -119,29 +139,33 @@ class Boid {
     ArrayList<Boid> nearby = new ArrayList<Boid>();
     ArrayList<Boid> nearbyPred = new ArrayList<Boid>();
     ArrayList<Boid> nearbyPrey = new ArrayList<Boid>();
+
     for (int i =0; i < boids.size(); i++) {
       Boid test = boids.get(i);
       if (test == this) continue;
-      if (abs(test.pos.x - this.pos.x) < friendRadius &&
-        abs(test.pos.y - this.pos.y) < friendRadius) {
-          if(test.fishID == fishID){
-            message("Added Friend;");
-            nearby.add(test);
-          }
-          else if(test.fishID == predatorID){
-            message("Added Predator!");
+      float xDist = abs(test.pos.x - this.pos.x);
+      float yDist = abs(test.pos.y - this.pos.y);
+      if ( xDist < preyRadius &&
+           yDist < preyRadius ) {
+             
+           if(test.fishID == preyID){
+            nearbyPrey.add(test);
+           }
+           else if ( xDist < friendRadius &&
+                     yDist < friendRadius) {
+            
+              if(test.fishID == fishID){
+              nearby.add(test);
+              }
+           }
+          else if(test.fishID == predatorID){           
             nearbyPred.add(test);
           }
-          else if(test.fishID == preyID){
-            message("Added Prey!");
-            nearbyPrey.add(test);
-          }
       }
-    }
+    }     
     friends = nearby;
     predatorList = nearbyPred;
-    preyList = nearbyPrey;
-    
+    preyList = nearbyPrey;  
   }
 
   PVector getPartner() {
@@ -241,8 +265,7 @@ class Boid {
     for (Boid other : predatorList) {
       float d = PVector.dist(pos, other.pos);
       // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
-      if ((d > 0) && (d < crowdRadius)) {
-        message("Fleeing Predator!");
+      if ((d > 0) && (d < preyRadius)) {
         // Calculate vector pointing away from neighbor
         PVector diff = PVector.sub(pos, other.pos);
         diff.normalize();
@@ -317,8 +340,7 @@ class Boid {
       Boid other = preyList.get(i);
       float d = PVector.dist(pos, other.pos);
       // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
-      if ((d > 0) && (d < attractRadius)) {
-        message("Chasing Prey!");
+      if ((d > 0) && (d < preyRadius)) {
         // Calculate vector pointing towards attractor
         PVector diff = PVector.sub(pos, other.pos);
         diff.normalize();
@@ -361,12 +383,7 @@ class Boid {
   }
 
   void draw () {
-    for ( int i = 0; i < friends.size(); i++) {
-      Boid f = friends.get(i);
-      stroke(0,255,0);
-      //color(255,0,0);
-      line(this.pos.x, this.pos.y, f.pos.x, f.pos.y);
-    }
+    
     
 
     noStroke();
@@ -406,14 +423,24 @@ class Boid {
     image(bodyImage,0,0,50*fishSize, 50*fishSize);
     popMatrix();
     
-    //Draw a line with a box around the prey
-    for ( int i = 0; i < preyList.size(); i++) {
-      Boid f = preyList.get(i);
-      stroke(255,0,0);
-      noFill();
+    if(show_lines){
+      
+      for ( int i = 0; i < friends.size(); i++) {
+      Boid f = friends.get(i);
+      stroke(0,255,0);
+      //color(255,0,0);
       line(this.pos.x, this.pos.y, f.pos.x, f.pos.y);
-      int boxSize = 20;
-      rect(f.pos.x-boxSize/2, f.pos.y-boxSize/2, boxSize, boxSize);
+    }
+    
+      //Draw a line with a box around the prey
+      for ( int i = 0; i < preyList.size(); i++) {
+        Boid f = preyList.get(i);
+        stroke(255,0,0);
+        noFill();
+        line(this.pos.x, this.pos.y, f.pos.x, f.pos.y);
+        int boxSize = 20;
+        rect(f.pos.x-boxSize/2, f.pos.y-boxSize/2, boxSize, boxSize);
+      }
     }
   }
 

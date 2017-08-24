@@ -26,6 +26,7 @@ boolean show_gender = false;
 boolean show_lines = false;
 boolean movement_wrap = false;
 boolean show_radius = false;
+boolean predator_prey = false;
 
 
 
@@ -225,13 +226,17 @@ void keyPressed () {
   } else if(key == 'l') {
     show_lines = !show_lines;
     message("show_lines = " + show_lines);
-  } else if(key == 'w') {
+  } else if(key == 'f') {
     movement_wrap = !movement_wrap;
     message("movement_wrap = " + movement_wrap);
   } else if(key == 'r') {
     show_radius = !show_radius;
     message("show_radius = " + show_radius);
+  } else if(key == 'p') {
+    predator_prey = !predator_prey;
+    message("predator_prey = " + predator_prey);
   }
+  
   recalculateConstants();
 
 }

@@ -147,20 +147,20 @@ class Boid {
       float yDist = abs(test.pos.y - this.pos.y);
       if ( xDist < preyRadius &&
            yDist < preyRadius ) {
-             
-           if(test.fishID == preyID){
-            nearbyPrey.add(test);
+           
+           if( predator_prey ){  
+             if(test.fishID == preyID){
+              nearbyPrey.add(test);
+             } else if(test.fishID == predatorID) {           
+              nearbyPred.add(test);
+              }
            }
            else if ( xDist < friendRadius &&
                      yDist < friendRadius) {
-            
               if(test.fishID == fishID){
               nearby.add(test);
               }
            }
-          else if(test.fishID == predatorID){           
-            nearbyPred.add(test);
-          }
       }
     }     
     friends = nearby;

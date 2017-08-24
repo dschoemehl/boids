@@ -79,7 +79,7 @@ void setup () {
   }*/
   
   //Load 3 fish
-   fishLibrary.add(new FishInfo(loadImage(filenames[0]), 0, 1, 2));
+   fishLibrary.add(new FishInfo(loadImage("Cardinal_Tetra_Pixel.png"), 0, 1, 2));
    fishLibrary.add(new FishInfo(loadImage(filenames[1]), 1, 2, 0));
    fishLibrary.add(new FishInfo(loadImage(filenames[2]), 2, 0, 1));
   }

@@ -34,7 +34,7 @@ class Boid {
     friends = new ArrayList<Boid>();
     predatorList = new ArrayList<Boid>();
     preyList = new ArrayList<Boid>();
-    fishSize = .5;
+    fishSize = 1;
     maxFishSize = 2;
     gender = int(random(2));
     find_partner = false;
